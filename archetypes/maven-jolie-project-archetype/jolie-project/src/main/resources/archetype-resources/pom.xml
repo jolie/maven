@@ -15,7 +15,6 @@
   </properties>
 
   <build>
-    <pluginManagement>
       <plugins>
         <!-- it copies all the jar dependencies into lib folder -->
         <plugin>
@@ -30,39 +29,49 @@
               <goal>copy-dependencies</goal>
             </goals>
             <configuration>
-              <outputDirectory>${basedir}/src/jolie/lib</outputDirectory>
+              <outputDirectory>${basedir}/src/main/jolie/lib</outputDirectory>
               <overWriteReleases>true</overWriteReleases>
               <overWriteSnapshots>true</overWriteSnapshots>
               <overWriteIfNewer>true</overWriteIfNewer>
               <excludeGroupIds>org.jolie-lang</excludeGroupIds>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-
-      <!-- it copies all the files of the javaservice's modules within folder modules with the exception of jar files -->
-      <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-dependency-plugin</artifactId>
-         <version>3.1.1</version>
-         <executions>
-           <execution>
+          <execution>
              <id>unpack-dependencies</id>
              <phase>initialize</phase>
              <goals>
                <goal>unpack-dependencies</goal>
              </goals>
              <configuration>
-               <includeGroupIds>javaservices.org.jolie-lang</includeGroupIds>
-               <outputDirectory>${basedir}/src/jolie/modules/</outputDirectory>
-               <excludes>**/*.jar</excludes>
+               <excludeTransitive>true</excludeTransitive>
+               <includeGroupIds>org.jolie-lang.microservices, org.jolie-lang.javaservices</includeGroupIds>
+               <outputDirectory>${basedir}/src/main/jolie/modules</outputDirectory>
+                <includes>**/*.iol</includes>
+                <excludes>**/*.class</excludes>
                <overWriteReleases>false</overWriteReleases>
                <overWriteSnapshots>true</overWriteSnapshots>
              </configuration>
            </execution>
-         </executions>
+        </executions>
       </plugin>
-      </plugins>
-    </pluginManagement>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/assembly/src.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+        <execution>
+          <id>make-assembly</id> 
+          <phase>package</phase> 
+          <goals>
+            <goal>single</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
+  </plugins>
   </build>
 </project>
