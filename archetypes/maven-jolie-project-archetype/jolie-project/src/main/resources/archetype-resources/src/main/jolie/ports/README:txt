@@ -1,0 +1,2 @@
+Put here all the output ports you want to be included by external microservices.
+These ports should declare all the available interfaces of the microservice you are building.
