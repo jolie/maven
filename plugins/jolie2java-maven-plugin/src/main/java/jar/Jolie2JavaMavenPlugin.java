@@ -41,6 +41,8 @@ public class Jolie2JavaMavenPlugin
     private String targetPort;
     @Parameter( defaultValue = "/usr/lib/jolie/include", property = "includePath", required = false )
     private String includePath;
+    @Parameter( defaultValue = "false", property = "interfaceOnly", required = false )
+    private String interfaceOnly;
 
     public void execute()
         throws MojoExecutionException {
@@ -68,7 +70,7 @@ public class Jolie2JavaMavenPlugin
             if ( targetPort != null && !targetPort.isEmpty() ) {
                 tPort = targetPort;
             }
-            JavaDocumentCreator instance = new JavaDocumentCreator( inspector, packageName, tPort, false, outputDirectory, false );
+            JavaDocumentCreator instance = new JavaDocumentCreator( inspector, packageName, tPort, false, outputDirectory, false, new Boolean(interfaceOnly) );
             instance.ConvertDocument();
         } catch( IOException e ) {
             e.printStackTrace();
