@@ -1,6 +1,8 @@
 package org.jolie.lang;
 
 
+import jolie.runtime.Value;
+import joliex.meta.MetaJolie;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 
@@ -45,9 +47,34 @@ public class JapJolieProjectMojo
             f.mkdirs();
         }
 
-        File outputJap = new File( outputDirectory.toString() + File.separator + finalName + ".jap");
-        JapUtils japUtils = new JapUtils(outputJap, projectGroupId, projectName, projectVersion );
-        japUtils.createJap(joliePath);
+        // create ports for embedding
+        File embeddingFolder = new File("src/main/jolie/ports/embedding");
+        if (!embeddingFolder.exists()) {
+            embeddingFolder.mkdir();
+        } else {
+            embeddingFolder.delete();
+            if (!embeddingFolder.exists()) {
+                embeddingFolder.mkdir();
+            }
+        }
+
+        try {
+            /* TODO retrieve the surface of all the input ports
+             MetaJolie metaJolie = new MetaJolie();
+            Value metadaDataRequest = Value.create();
+            metadaDataRequest.getFirstChild("filename").setValue("src/main/jolie/main.ol");
+            Value metadataResponse = metaJolie.getInputPortMetaData( metadaDataRequest );
+            for( Value input : metadataResponse.getChildren("input") ) {
+
+            }*/
+
+            // create jap
+            File outputJap = new File( outputDirectory.toString() + File.separator + finalName + ".jap");
+            JapUtils japUtils = new JapUtils(outputJap, projectGroupId, projectName, projectVersion );
+            japUtils.createJap(joliePath);
+        } catch( Exception e ) {
+            e.printStackTrace();
+        }
 
     }
 }

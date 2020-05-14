@@ -29,26 +29,28 @@ public class JapUtils {
         generateFileList(folderToCompress, folderToCompress);
         FileOutputStream fos = null;
         ZipOutputStream zos = null;
+        String mainEntryFolder = projectGroupId + "." + projectName + File.separator;
         try {
             fos = new FileOutputStream(outputJapFile);
             zos = new ZipOutputStream(fos);
             FileInputStream in = null;
 
             for (String file: this.fileList) {
-                ZipEntry ze = new ZipEntry(file);
+                ZipEntry ze = new ZipEntry( mainEntryFolder + file);
                 zos.putNextEntry(ze);
                 in = new FileInputStream( folderToCompress.toString() +  File.separator + file);
                 writingEntry(in, buffer, zos, ze );
             }
 
             // creating META-INF
-            ZipEntry ze = new ZipEntry( "META-INF" + File.separator + "MANIFEST.MF" );
+            ZipEntry ze = new ZipEntry(  "MANIFEST.MF" );
             zos.putNextEntry(ze);
-            InputStream stin = new ByteArrayInputStream("test".getBytes() );
+            String manifestContent = "X-JOLIE-Main-Program: " + mainEntryFolder + "main.ol";
+            InputStream stin = new ByteArrayInputStream(manifestContent.getBytes() );
             writingEntry(stin, buffer, zos, ze );
 
             // creating maven
-            ze = new ZipEntry( "META-INF" + File.separator + "maven" + File.separator
+            ze = new ZipEntry( mainEntryFolder + "META-INF" + File.separator + "maven" + File.separator
                     + projectGroupId + File.separator + projectName + File.separator + "pom.properties" );
             zos.putNextEntry(ze);
             String content = "version="+projectVersion+"\ngroupId="+projectGroupId+"\nartifactId="+projectName;
@@ -56,8 +58,12 @@ public class JapUtils {
             writingEntry(stin, buffer, zos, ze );
 
             // adding pom
+            in = new FileInputStream( "pom.xml" );
+            ze = new ZipEntry( mainEntryFolder + "META-INF" + File.separator + "maven" + File.separator
+                    + projectGroupId + File.separator + projectName + File.separator + "pom.xml" );
+            zos.putNextEntry(ze);
+            writingEntry(in, buffer, zos, ze );
 
-            
             zos.closeEntry();
 
         } catch (IOException ex) {
