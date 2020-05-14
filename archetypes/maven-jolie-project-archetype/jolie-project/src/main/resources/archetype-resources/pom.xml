@@ -36,55 +36,43 @@
               <excludeGroupIds>org.jolie-lang</excludeGroupIds>
             </configuration>
           </execution>
-           <execution>
-            <id>copy-dependencies-javaservices</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${basedir}/src/main/jolie/lib</outputDirectory>
-              <overWriteReleases>true</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-              <overWriteIfNewer>true</overWriteIfNewer>
-              <includeGroupIds>org.jolie-lang.javaservices</includeGroupIds>
-            </configuration>
-          </execution>
-          <execution>
-             <id>unpack-dependencies</id>
-             <phase>initialize</phase>
-             <goals>
-               <goal>unpack-dependencies</goal>
-             </goals>
-             <configuration>
-               <excludeTransitive>true</excludeTransitive>
-               <includeGroupIds>org.jolie-lang.microservices, org.jolie-lang.javaservices</includeGroupIds>
-               <outputDirectory>${basedir}/src/main/jolie/modules</outputDirectory>
-                <includes>**/*.iol, **/*.ol</includes>
-                <excludes>**/*.class</excludes>
-               <overWriteReleases>true</overWriteReleases>
-               <overWriteSnapshots>true</overWriteSnapshots>
-             </configuration>
-           </execution>
+           
         </executions>
       </plugin>
+
       <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.2.0</version>
+            <groupId>org.jolie-lang</groupId>
+            <artifactId>jap-jolieprojects-maven-plugin</artifactId>
+            <version>1.0</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>japgen</goal>
+                    </goals>
+                </execution>
+            </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>2.5.1</version>
         <configuration>
-          <descriptors>
-            <descriptor>src/assembly/src.xml</descriptor>
-          </descriptors>
+          <file>${project.build.directory}/${project.build.finalName}.jap</file>
+          <groupId>org.mypackage</groupId>
+          <artifactId>T7</artifactId>
+          <version>1.0-SNAPSHOT</version>
+          <packaging>jap</packaging>
         </configuration>
         <executions>
-        <execution>
-          <id>make-assembly</id> 
-          <phase>package</phase> 
-          <goals>
-            <goal>single</goal>
-          </goals>
-        </execution>
-      </executions>
+          <execution>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <phase>install</phase>
+          </execution>
+        </executions>
+       
     </plugin>
   </plugins>
   </build>

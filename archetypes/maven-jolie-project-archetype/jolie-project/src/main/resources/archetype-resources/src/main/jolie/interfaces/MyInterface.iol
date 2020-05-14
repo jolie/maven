@@ -1,4 +1,6 @@
+include "../types/MyType.iol"
+
 interface MyInterface {
     RequestResponse:
-        myOperation
+        myOperation( MyType )( MyType )
 }
